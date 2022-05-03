@@ -50,7 +50,7 @@ def imu_avg(mpu6050):
     sgy = 0
     sgz = 0
     N = 1000 
-	
+    
     for cal_count in range(1,N) :
     
         # read the IMU
@@ -91,7 +91,7 @@ def imu_avg(mpu6050):
     G = [gx_mean, gy_mean, gz_mean]
 
     return A, G
-	
+    
 def cal_end(flag):
     print("\n********************************************************************************")
     if flag == 1:
@@ -122,7 +122,7 @@ def imu_cal(mpu6050,cal_data):
     if reply != 'y':
         cal_end(1)
         return
-	
+    
     print("****************************************************************")
     print("\n  Place the unit in upright position on level platform - z-axis down \n")
     raw_input("  Hit enter when ready\n")
@@ -139,7 +139,7 @@ def imu_cal(mpu6050,cal_data):
     bwx = (Gu[0] + Gd[0])/2
     bwy = (Gu[1] + Gd[1])/2
     bwz = (Gu[2] + Gd[2])/2 
-	
+    
     print("****************************************************************")
     print("\n  Place the unit such that the y-axis is up \n")
     raw_input("  Hit enter when ready\n")
@@ -163,13 +163,13 @@ def imu_cal(mpu6050,cal_data):
     raw_input("  Hit enter when ready\n")
     print("  Measuring IMU output when inverted (z axis up)")
     [Axn,Gu] = imu_avg(mpu6050)
-	
-	# Calibration coefficient equations - accelerometer parameters
-	# Scalefactors
+    
+    # Calibration coefficient equations - accelerometer parameters
+    # Scalefactors
     SFx = (Axp[0] - Axn[0])/2
     SFy = (Ayp[1] - Ayn[1])/2
     SFz = (Azp[2] - Azn[2])/2
-	# Biases
+    # Biases
     bx1 = (Axp[0]+Axn[0])/2
     bx2 = (Ayp[0]+Ayn[0])/2
     bx3 = (Azp[0]+Azn[0])/2
@@ -182,7 +182,7 @@ def imu_cal(mpu6050,cal_data):
     bax = (bx1+bx2+bx3)/3
     bay = (by1+by2+by3)/3
     baz = (bz1+bz2+bz3)/3
-	# Angle tilts
+    # Angle tilts
     psi1 = -(Axp[1] - Axn[1])/(2*SFy)
     psi2 =  (Ayp[0] - Ayn[0])/(2*SFx)
     alpha_z = (psi1 + psi2)/2
@@ -192,7 +192,7 @@ def imu_cal(mpu6050,cal_data):
     phi1 = -(Ayp[2] - Ayn[2])/(2*SFz)
     phi2 =  (Azp[1] - Azn[1])/(2*SFy)
     alpha_x = (phi1 + phi2)/2
-	
+    
     print("\n****************************************************************")
     print("IMU Calibration Results:")
     print("   Rate bias         = " + str(bwx) + "  " + str(bwy) + "  " + str(bwz) + "   deg/sec")
@@ -205,7 +205,7 @@ def imu_cal(mpu6050,cal_data):
     if reply != 'y':
         cal_end(1)
         return cal_data
-		
+        
     # Write out the calibration coefficient files
     # IMU Calibration coefficients
     try:
@@ -229,7 +229,7 @@ def imu_cal(mpu6050,cal_data):
         print('     IMU cal data --> ' + str(cal_data))
 
     cal_end(2)
-	
+    
     return cal_data
 
 
@@ -301,11 +301,11 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
         # bax_k, bay_k, baz_k - Estimated accelerometer biases along x, y, and z axes (m/sec^2)
         # sfax_k, sfay_k, sfaz_k - Estimated accelerometer scalefactor along x, y, and z axes (-)
         # bwx_k, bwy_k, bwz_k - Estimated rate biases along x, y, and z axes (rad/sec)
-    	# pz_k - z (altitude) position estimate
+        # pz_k - z (altitude) position estimate
 
-	#===================================================================================
-	# Static variables
-	#===================================================================================
+    #===================================================================================
+    # Static variables
+    #===================================================================================
     xr_k = st_list[0]
     xp_k = st_list[1]
     xy_k = st_list[2]
@@ -326,10 +326,10 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
     sfay_k = st_list[17]
     sfaz_k = st_list[18]
 
-	#===================================================================================
-	# IMU & Nav Filter Coefficients
-	#===================================================================================
-	# Coarse calibration coefficients 
+    #===================================================================================
+    # IMU & Nav Filter Coefficients
+    #===================================================================================
+    # Coarse calibration coefficients 
     # Acceleration biases in G's
     b_ax = cal_data[0]
     b_ay = cal_data[1]
@@ -337,7 +337,7 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
     sf_ax = cal_data[3]
     sf_ay = cal_data[4]
     sf_az = cal_data[5]
-	# Gyro biases in deg/sec
+    # Gyro biases in deg/sec
     b_gx = cal_data[6]
     b_gy = cal_data[7]
     b_gz = cal_data[8]
@@ -353,8 +353,8 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
     Kw = (3.14159/180)    #(500/32768)*(3.14159/180)
     # Linear acceleration conversion -- ((m/s^2) / g )
     Ka = g
-	
-	# altitude estimation coefficients
+    
+    # altitude estimation coefficients
     K1 = 0.043  #0.0093
     K2 = 0.29   #0.1363
     K3 = 0.0032 #0.0003
@@ -362,12 +362,12 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
         K1 = 0.093*10
         K2 = 1.363*10
         K3 = 0.003*10
-	
-	# horizontal velocity estimation coefficients
+    
+    # horizontal velocity estimation coefficients
     Kh1 = 0.0251
     Kh2 = 0.0003
-	
-	# attitude filter coefficients
+    
+    # attitude filter coefficients
     Katt1 = 0.1
     Katt2 = -0.01
     if cv == 3:
@@ -380,19 +380,19 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
     #b_magy = +140
     #b_magz = 0
 
-	#===================================================================================
-	# IMU Coarse Compensation
-	#===================================================================================
+    #===================================================================================
+    # IMU Coarse Compensation
+    #===================================================================================
     # Accelerometer coarse compensation equations -- correcting for bias and scale factor
     Ax = (Ax - b_ax)/sf_ax
     Ay = (Ay - b_ay)/sf_ay
     Az = (Az - b_az)/sf_az
 
-	# Gyro compensation equations -- correcting for bias and scale factor
+    # Gyro compensation equations -- correcting for bias and scale factor
     Gx = (Gx - b_gx)/sf_gx
     Gy = (Gy - b_gy)/sf_gy
     Gz = (Gz - b_gz)/sf_gz
-		
+        
     # Accelerometer and gyro axes tilt compensation
     Abx = Ax + alpha_y*Az
     Aby = Ay - alpha_x*Az
@@ -400,36 +400,36 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
     Gbx = Gx + alpha_y*Gz
     Gby = Gy - alpha_x*Gz
     Gbz = Gz - alpha_y*Gx + alpha_x*Gy
-				
+                
     # Convert body angular rates from deg/sec to radians/sec
     omega_r = Kw * Gbx
     omega_p = Kw * Gby
     omega_y = Kw * Gbz
-	
+    
     # Convert body accelerations from G's to m/sec^2 
     Abx = Ka * Abx
     Aby = Ka * Aby
     Abz = Ka * Abz
-	
-	# Average last 2 accelerometer readings
+    
+    # Average last 2 accelerometer readings
     Abxf = (Abx + ax_k)/2
     Abyf = (Aby + ay_k)/2
     Abzf = (Abz + az_k)/2
-	
-	#===================================================================================
-	# Magnetic Sensor Coarse Compensation
-	#===================================================================================
+    
+    #===================================================================================
+    # Magnetic Sensor Coarse Compensation
+    #===================================================================================
     b_magx = mag_cal[0]
     b_magy = mag_cal[1]
     b_magz = mag_cal[2]
     heading_bias = mag_cal[3]
-	
-	# magnetic sensor bias compensation
+    
+    # magnetic sensor bias compensation
     magx = magx - b_magx
     magy = magy - b_magy
     magz = magz - b_magz
-	
-	# coordinate transformation to remove heading bias error
+    
+    # coordinate transformation to remove heading bias error
     ctb = math.cos(heading_bias)
     stb = math.sin(heading_bias)
     mxp = ctb*magx - stb*magy
@@ -437,10 +437,10 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
     magx = mxp
     magy = myp
     #print "   " + str(magx) + ",    " + str(magy) + ",   " + str(magz)
-	#===================================================================================
-	# Inertial Navigation
-	#===================================================================================
-	# convert the accelerometer readings to angles under assumption of zero horizontal acceleration
+    #===================================================================================
+    # Inertial Navigation
+    #===================================================================================
+    # convert the accelerometer readings to angles under assumption of zero horizontal acceleration
     theta_pitch, theta_roll  = mpu6050.getTiltAngles(Abxf, Abyf, Abzf)
 
     # Euler angle dynamic equations (roll pitch yaw)
@@ -461,14 +461,14 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
     xr_kp1 = xr_k +  dT*((phi_dot - bwx_k) + Katt1*r)
     xr_k = xr_kp1
     bwx_k = bwx_k + dT*Katt2*r
-	
+    
     # Pitch angle and rate bias extended kalman filter
     r = theta_pitch - xp_k
     xp_kp1 = xp_k +  dT*((the_dot - bwy_k) + Katt1*r)
     xp_k = xp_kp1
     bwy_k = bwy_k + dT*Katt2*r
 
-	# Convert fine compensated body acceleration (Abx Aby Abz)' to inertial axes
+    # Convert fine compensated body acceleration (Abx Aby Abz)' to inertial axes
     #cphi = math.cos(xr_kp1)
     #sphi = math.sin(xr_kp1)
     #cthe = math.cos(xp_kp1)
@@ -487,9 +487,9 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
     Aix = c11*Abxf + c12*Abyf + c13*Abzf
     Aiy = c21*Abxf + c22*Abyf + c23*Abzf
     Aiz = c31*Abxf + c32*Abyf + c33*Abzf
-	
-	# Vertical altitude and velocity EKF with z-axis positive UP (i.e. positive rx_alt)
-	# Compute altitude residual
+    
+    # Vertical altitude and velocity EKF with z-axis positive UP (i.e. positive rx_alt)
+    # Compute altitude residual
     try:
         r = rx_alt - pz_k
     except:
@@ -499,14 +499,14 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
     pz_kp1 = pz_k + (vz_k + K2*r)*dT
     baz_kp1 = baz_k + K3*r*dT
     #print "Alt filt: res = " + str(r) + " vel_hat = " + str(vz_kp1) + " x_hat = " + str(pz_kp1) + " bias = "  + str(baz_kp1) + " accel = " + str(-(Aiz))+ " accel error = " + str(-(Aiz+g) + baz_k)
-		
+        
     # Horizontal velocity filters
     vx_kp1 = vx_k + ((Aix + ax_k)/2 - Kh1*vx_k)*dT
     #bax_kp1 = bax_k - K3*vx_k*dT
     vy_kp1 = vy_k + ((Aiy + ay_k)/2 - Kh1*vy_k)*dT
     #bay_kp1 = bay_k - K3*vy_k*dT
-	
-	
+    
+    
     # Yaw sensor processing and filtering ***********************************
     rx_head_good = 1
     # transform magnetometer readings onto local level frame
@@ -528,7 +528,7 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
     except:	
         #print "heading calc issue"
         rx_head_good = 0 
-		
+        
     # Yaw angle and yaw rate bias Extended Kalman Filter
     #   - produces filtered heading angle provided by CRIUS compass
     if rx_head_good == 1:
@@ -545,7 +545,7 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
     xy_kp1 = xy_k +  dT*((psi_dot - bwz_k) + Katt1 * r )
     xy_k = xy_kp1
     bwz_k = bwz_k + dT*Katt2*r
-	
+    
     #if rx_head_good == 1:
     #    print " heading_true = " + str(heading_true) + " magx = " + str(magx) + " magix = " + str(magix) + " magy = " + str(magy) + " magiy = " + str(magiy)
 
@@ -556,7 +556,7 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
     ax_k = Abx
     ay_k = Aby
     az_k = Abz
-	# retain the previous z position and acceleration bias & scalefactor for the next pass
+    # retain the previous z position and acceleration bias & scalefactor for the next pass
 #    if cv== 2:
 #        bax_k = bax_kp1
 #        bay_k = bay_kp1
@@ -568,9 +568,9 @@ def nav(Ax, Ay, Az, Gx, Gy, Gz, mpu6050, delta_time, st_list, cal_data, rx_alt, 
 
     delta_g = -(Aiz + g)
     statics_nav = [xr_k, xp_k, xy_k, vx_k, vy_k, vz_k, ax_k, ay_k, az_k, bax_k, bay_k, baz_k, pz_k, bwx_k, bwy_k, bwz_k, sfax_k, sfay_k, sfaz_k, delta_g, theta_pitch, theta_roll, Aiz, res_alt]
-		
+        
     return omega_r, omega_p, omega_y, vx_kp1, vy_kp1, vz_kp1, statics_nav, statics_sensor
-	
+    
 
 def control(cv, thet_pitch_sp, thet_roll_sp, omeg_yaw_sp, thet_yaw_sp, alt_sp, xr_kp1, xp_kp1, xy_kp1, omega_r, omega_p, omega_y, vx_kp1, vy_kp1, vz_kp1, pz_k, statics_cnt):
 
@@ -580,7 +580,7 @@ def control(cv, thet_pitch_sp, thet_roll_sp, omeg_yaw_sp, thet_yaw_sp, alt_sp, x
     x1r_k = statics_cnt[5]
     x2r_k = statics_cnt[6]
     x3r_k = statics_cnt[7]
-	
+    
     # LQR / LQG compensator coefficients  (3.3 Hz bandwidth)
     ad11 = 0.951
     ad12 = 9.651e-5
@@ -600,10 +600,10 @@ def control(cv, thet_pitch_sp, thet_roll_sp, omeg_yaw_sp, thet_yaw_sp, alt_sp, x
     cd1 = 3.162
     cd2 = 0.58
     cd3 = 2.398
-		
+        
     # Yaw rate controller gain
     Kd = 1.8
-	
+    
     # Yaw angle controller gains
     Kp_yaw=1.8      # proportional gain (N-m / rad)
     Kd_yaw=1.8      # derivative gain (N-m / (rad/sec) )
@@ -633,16 +633,16 @@ def control(cv, thet_pitch_sp, thet_roll_sp, omeg_yaw_sp, thet_yaw_sp, alt_sp, x
     x1r_k = x1r_kp1
     x2r_k = x2r_kp1
     x3r_k = x3r_kp1
-	
+    
     # Yaw rate controller *********************************************************
     if cv == 0:
         u_yaw = Kd*(omeg_yaw_sp - omega_y)
     # Yaw angle controller *********************************************************
     else:
-	    u_yaw = Kp_yaw*(thet_yaw_sp-xy_kp1) - Kd_yaw*omega_y
+        u_yaw = Kp_yaw*(thet_yaw_sp-xy_kp1) - Kd_yaw*omega_y
 
     # Altitude Controller *********************************************************
-    G1 = 123 
+    G1 = 123
     G2 = 100
     u = (-G2*vz_kp1 + G1*(alt_sp - pz_k))
     
@@ -662,8 +662,8 @@ def control(cv, thet_pitch_sp, thet_roll_sp, omeg_yaw_sp, thet_yaw_sp, alt_sp, x
 # ---------------------------------------------------------------------
 def rc_trk(rx_in, xk, D):
     # RC Command Input Tracking Adaptive Deadband function
-	# Reduces command input noise by applying a deadband 
-	# about current temporal command input setting
+    # Reduces command input noise by applying a deadband 
+    # about current temporal command input setting
     # inputs:
     #     rx_in - raw input from radio controller
     #     xk - static variables list
@@ -685,20 +685,20 @@ def rc_trk(rx_in, xk, D):
 
     return xo, xk
 
-	
+    
 def sign(x): return 1 if x >= 0 else -1
 
 def rc_trk1(rx_in, xk, D):
     # RC Command Input Tracking Adaptive Deadband function #2
-	# Reduces command input noise by applying a deadband 
-	# about current temporal command input setting
+    # Reduces command input noise by applying a deadband 
+    # about current temporal command input setting
     # inputs:
     #     rx_in - raw input from radio controller
     #     xk - static variables list
     # outputs:
     #     x0 - filtered output variables
     #     xk - updated static variable
-	
+    
     #Dlt = rx_in - xk[0]
     #if abs(Dlt) < D:
     uk = (xk[3]+xk[2]+rx_in)/3
@@ -717,12 +717,12 @@ def rc_trk1(rx_in, xk, D):
     else:
         xo = y2k
     #print "Inside = "+ str(rx_in) + " out = " + str(xo)
-	
+    
     return xo, xk
-	
-	
+    
+    
 def rc_deadband(rx_in, D):
-	# Standard deadband function applied around zero
+    # Standard deadband function applied around zero
     # input:
     #     rx_in - raw input from radio controller
     # output:
@@ -734,16 +734,16 @@ def rc_deadband(rx_in, D):
     elif (rx_in < -D):
         xo = rx_in + D
     return xo	
-	
-	
+    
+    
 # ---------------------------------------------------------------------
 # Setpoint
 # ---------------------------------------------------------------------
 def setpoint(cv, stk_r, stk_p, stk_y, stk_v, ch_5, ch_6, ch_7, ch_8, statics_sp, rc_cal_data):
     # This function receives raw stick data and computes the setpoint values and switch integer values
-	# The range of stk outputs values are approximately:
+    # The range of stk outputs values are approximately:
         # -1 to +1 for roll, pitch, & yaw
-		#  0 to +2 for vertical
+        #  0 to +2 for vertical
     # The range for the 'Aux2' knob is approximately:
         # 0 to 1 and is currently unused
     # The switch values:
@@ -768,19 +768,19 @@ def setpoint(cv, stk_r, stk_p, stk_y, stk_v, ch_5, ch_6, ch_7, ch_8, statics_sp,
     statics_sp[4:8] = xk
 
     if cv == 0:
-	    # Yaw axis -- adaptive dead band
+        # Yaw axis -- adaptive dead band
         xk = statics_sp[8:12]
         [rx_0, xk] = rc_trk(stk_y, xk, D)
         sp_y = (rx_0 - rc_cal_data[0][2]) / rc_cal_data[1][2] *2
         statics_sp[8:12] = xk
-		
+        
         # Vertical axis adaptive deadband 
         xk = statics_sp[12:16]
         [rx_0, xk] = rc_trk(stk_v, xk, D)
         #print "  " + str(stk_v) + "   " + str(rx_0)
         sp_v = (rx_0 - rc_cal_data[0][3]) / rc_cal_data[1][3] *2
         statics_sp[12:16] = xk
-		
+        
     else:
         # Yaw axis -- fixed dead band
         D = 30
@@ -809,20 +809,20 @@ def setpoint(cv, stk_r, stk_p, stk_y, stk_v, ch_5, ch_6, ch_7, ch_8, statics_sp,
 
     return sp_r, sp_p, sp_y, sp_v, sw5, sw6, sp7, sw8, statics_sp
 
-	
+    
 # ---------------------------------------------------------------------
 # Guidance
 # ---------------------------------------------------------------------
 def guidance(cv, sp_r, sp_p, sp_y, sp_v, statics_guid, theta_yaw, flt_state):
     # static_guid:
-	#    static_guid[0] - heading angle setpoint (rad)
-	#    static_guid[1] - altitude setpoint (m)
+    #    static_guid[0] - heading angle setpoint (rad)
+    #    static_guid[1] - altitude setpoint (m)
 
     thet_roll_sp = sp_r * 0.44 						# (rad)  with range of +/- 25 degrees
     thet_pitch_sp = -sp_p * 0.44					# (rad)  with range of +/- 25 degrees
     d_omeg_yaw_sp = 0 
     MAX_ALT = 110									# (meters)  110 meters = 360 ft
-	
+    
     if cv == 0:
         omeg_yaw_sp = sp_y / 1						# (rad/sec)  with range of +/- 30 degrees/sec
         vthrust_sp = sp_v * 500						# (ESC counts) with range of 0 to 1000 counts (msec)

@@ -30,7 +30,7 @@
 '''
 
 import math
-from gnc import imu_cal
+from pilot.modules.gnc import imu_cal
 from rif_cmd import heading_cal
 from rif_cmd import rc_cal
 

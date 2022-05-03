@@ -73,14 +73,14 @@ from modules.gnc import imu_cal
 # RPIO Pulse Width Modulation (PWM) functions
 # ---------------------------------------------------------------------
 def RpioSetup():
-# setup to use the Broadcomm (BCM)SOC channel pin numbers
-RPIO.setmode(RPIO.BCM)
+    # setup to use the Broadcomm (BCM)SOC channel pin numbers
+    RPIO.setmode(RPIO.BCM)
 
 def ShutdownRPIO():
-PWM.cleanup()
-RPIO.cleanup()
-time.sleep(0.10)
-# sys.exit(0)           # This was uncommented previously
+    PWM.cleanup()
+    RPIO.cleanup()
+    time.sleep(0.10)
+    # sys.exit(0)           # This was uncommented previously
 
 def resizeHandler(signum, frame):
     print("resize-window signal caught")
